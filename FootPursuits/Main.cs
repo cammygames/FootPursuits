@@ -23,6 +23,8 @@ namespace FootPursuits
                 int.TryParse(Common.getCurrentVersion(), out installedVersion);
 
                 if (latestVersion > installedVersion) Game.DisplayNotification("A new version of FootPursuits is available ~g~V" + latestVersion.ToString());
+
+                GameFiber.Hibernate();
             }, "Update Check");
         }
         public override void Finally()
