@@ -9,10 +9,15 @@ namespace FootPursuits.Callouts.Base
 {
     public abstract class CalloutBase : Callout
     {
-        public new CalloutState State { get; set; }
-        public ResponseType ResponseType { get; set; }
-        public Blip CalloutBlip { get; set; }
-        public Vector3 CalloutLocation { get; set; }
+        protected new CalloutState State { get; set; }
+        protected ResponseType ResponseType { get; set; }
+        protected Blip CalloutBlip { get; set; }
+        protected Vector3 CalloutLocation { get; set; }
+
+        protected abstract void StartCallout();
+        protected abstract void DisplayCallout();
+        protected abstract void AcceptedCallout();
+        protected abstract void ProcessCallout();
 
         public CalloutBase()
         {
@@ -42,7 +47,7 @@ namespace FootPursuits.Callouts.Base
             }
         }
 
-        protected Vector3 GetRandomLocationNearPlayer(float arround, bool sideWalk)
+        protected Vector3 GetRandomLocationNearPlayer(float arround, bool sideWalk = true)
         {
             if (sideWalk)
             {
@@ -56,12 +61,15 @@ namespace FootPursuits.Callouts.Base
 
         public override bool OnBeforeCalloutDisplayed()
         {
+            DisplayCallout();
+
             return base.OnBeforeCalloutDisplayed();
         }
 
         public override bool OnCalloutAccepted()
         {
             State = CalloutState.Responding;
+            AcceptedCallout();
 
             return base.OnCalloutAccepted();
         }
@@ -88,6 +96,8 @@ namespace FootPursuits.Callouts.Base
                 State = CalloutState.OnScene;
                 OnArrival();
             }
+
+            ProcessCallout();
         }
 
         public override void End()
