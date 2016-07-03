@@ -62,6 +62,7 @@ namespace FootPursuits
         private static void RegisterCallouts()
         {
             Functions.RegisterCallout(typeof(Callouts.Nudist.NudistCallout));
+            Functions.RegisterCallout(typeof(Callouts.Mugging.MuggingCallout));
         }
     }
 }
