@@ -28,12 +28,16 @@ namespace FootPursuits.Callouts.Mugging
         {
             Functions.PlayScannerAudio("UNIT_RESPONDING_DISPATCH_01");
 
-            Attacker = new Ped(CalloutLocation);
-            Victim = new Ped(CalloutLocation.Around(1f));
+            Attacker = new Ped(CalloutLocation.Around(15f));
+            Victim = new Ped(Attacker.Position.Around(2f));
+            if (!Attacker.Exists()) End();
+            if (!Victim.Exists()) End();
 
             //give the attacker a weapon and give him a blip.
             Attacker.Inventory.GiveNewWeapon("WEAPON_PISTOL", 50, true);
             AttackerBlip = Attacker.AttachBlip();
+
+            if (!AttackerBlip.Exists()) End();
             AttackerBlip.IsFriendly = false;
 
             NativeFunction.CallByName<uint>("TASK_AIM_GUN_AT_ENTITY", Attacker, Victim, -1, true);
@@ -45,15 +49,17 @@ namespace FootPursuits.Callouts.Mugging
         {
             base.OnArrival();
 
+            if (!Attacker.Exists()) End();
+            if (!Victim.Exists()) End();
+
             Attacker.PlayAmbientSpeech("GENERIC_INSULT_MED");
+            Mugging();
         }
 
         protected override void ProcessCallout()
         {
             if (!Attacker.Exists()) End();
             if (!Victim.Exists()) End();
-
-            Mugging();
         }
 
         private void Mugging()
@@ -65,25 +71,41 @@ namespace FootPursuits.Callouts.Mugging
 
                 int chance = random.Next(1, 5);
 
-                if (chance == 3)
+                if (chance == 3 && Attacker.Exists() && Victim.Exists())
                 {
+                    Victim.Tasks.ReactAndFlee(Attacker); // run away from attacker
                     Attacker.Tasks.FireWeaponAt(Victim, 2000, FiringPattern.SingleShot);
-                    Victim.Tasks.ReactAndFlee(Attacker);
 
                     GameFiber.Sleep(2000);
 
-                    Attacker.Tasks.ReactAndFlee(PlayerPed);
+                    Attacker.Tasks.ReactAndFlee(PlayerPed); // run away from player.
                 }
                 else
                 {
-                    Victim.Tasks.ReactAndFlee(Attacker);
-                    Attacker.Tasks.ReactAndFlee(PlayerPed);
+                    if (Attacker.Exists() && Victim.Exists())
+                    {
+                        Victim.Tasks.ReactAndFlee(Attacker);
+                        Attacker.Tasks.ReactAndFlee(PlayerPed);
+                    }
+                    else
+                    {
+                        End();
+                    }
+
                 }
 
-                Victim.Dismiss();
+                if (Victim.Exists()) Victim.Dismiss();
 
-                Functions.AddPedToPursuit(Pursuit, Attacker);
-                Functions.SetPursuitIsActiveForPlayer(Pursuit, true);
+                if (Attacker.Exists())
+                {
+                    Functions.AddPedToPursuit(Pursuit, Attacker);
+                    Functions.SetPursuitIsActiveForPlayer(Pursuit, true);
+                }
+                else
+                {
+                    End();
+                }
+
 
                 while (Functions.IsPursuitStillRunning(Pursuit))
                 {
@@ -95,5 +117,11 @@ namespace FootPursuits.Callouts.Mugging
             }, CalloutName);
         }
 
+        protected override void CleanupCallout()
+        {
+            if (Attacker.Exists()) Attacker.Dismiss();
+            if (AttackerBlip.Exists()) AttackerBlip.Delete();
+            if (Victim.Exists()) Victim.Dismiss();
+        }
     }
 }
