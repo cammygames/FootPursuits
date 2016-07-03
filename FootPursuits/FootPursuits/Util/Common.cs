@@ -9,5 +9,10 @@ namespace FootPursuits.Util
     public class Common
     {
         public static Random random = new Random();
+
+        public static String getCurrentVersion()
+        {
+            return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        }
     }
 }
