@@ -67,8 +67,8 @@ namespace FootPursuits.Callouts.Base
         public override bool OnBeforeCalloutDisplayed()
         {
             Game.LogTrivialDebug(CalloutName + ": Displaying Callout");
-            CalloutPosition = GetRandomLocationNearPlayer(100f);
-            if (CalloutPosition == new Vector3(0, 0, 0)) Game.LogTrivialDebug(CalloutName + ": Returned Null");
+            CalloutLocation = GetRandomLocationNearPlayer(100f);
+            CalloutPosition = CalloutLocation;
 
             ShowCalloutAreaBlipBeforeAccepting(CalloutLocation, 15f);
             AddMinimumDistanceCheck(5f, CalloutLocation);
