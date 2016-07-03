@@ -1,0 +1,7 @@
+D:\GTAV DEV\FootPursuits\FootPursuits\FootPursuits\obj\Debug\FootPursuits.csprojResolveAssemblyReference.cache
+D:\GTAV DEV\FootPursuits\FootPursuits\FootPursuits\bin\Debug\FootPursuits.dll
+D:\GTAV DEV\FootPursuits\FootPursuits\FootPursuits\bin\Debug\FootPursuits.pdb
+D:\GTAV DEV\FootPursuits\FootPursuits\FootPursuits\bin\Debug\LSPD First Response.dll
+D:\GTAV DEV\FootPursuits\FootPursuits\FootPursuits\bin\Debug\RagePluginHookSDK.dll
+D:\GTAV DEV\FootPursuits\FootPursuits\FootPursuits\obj\Debug\FootPursuits.dll
+D:\GTAV DEV\FootPursuits\FootPursuits\FootPursuits\obj\Debug\FootPursuits.pdb
