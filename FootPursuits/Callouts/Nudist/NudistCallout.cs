@@ -1,9 +1,8 @@
-﻿using System;
-using FootPursuits.Callouts.Base;
-using LSPD_First_Response.Mod.Callouts;
-using LSPD_First_Response.Mod.API;
-using Rage;
+﻿using Rage;
 using FootPursuits.Util;
+using FootPursuits.Callouts.Base;
+using LSPD_First_Response.Mod.API;
+using LSPD_First_Response.Mod.Callouts;
 
 namespace FootPursuits.Callouts.Nudist
 {
@@ -11,9 +10,10 @@ namespace FootPursuits.Callouts.Nudist
     class NudistCallout : CalloutBase
     {
         const int ChanceOfWeapon = 100;
+        const int ChanceOfFlee = 100;
 
         public override string CalloutName { get { return "NudistCallout"; } }
-        protected Ped nudist;
+        public Ped nudist { get; set; }
 
         protected override void DisplayCallout()
         {
@@ -34,7 +34,11 @@ namespace FootPursuits.Callouts.Nudist
 
         protected override void ProcessCallout()
         {
-            throw new NotImplementedException();
+            if (NudistFlees())
+            {
+                NudistPursuit Pursuit = new NudistPursuit(this);
+                Pursuit.run();
+            }
         }
 
         protected override void CleanupCallout()
@@ -44,12 +48,23 @@ namespace FootPursuits.Callouts.Nudist
 
         protected void CreateNudist()
         {
-            nudist = new Ped(CalloutLocation);
+            nudist = new Ped (CalloutLocation);
+
+            if (!nudist.Exists()) {
+                Game.LogTrivial(CalloutName + ": Ped did not spawn");
+                End();
+            }
+
             nudist.IsPersistent = true;
             nudist.Alertness = 1;
             nudist.BlockPermanentEvents = true;
             nudist.Tasks.Wander();
             Game.LogTrivialDebug(CalloutName + ": Created new Nudist");
+        }
+
+        protected bool NudistFlees()
+        {
+            return Common.GetRandomNumber() < ChanceOfFlee;
         }
 
         protected bool NudistHasWeapon()
@@ -60,8 +75,8 @@ namespace FootPursuits.Callouts.Nudist
         protected void GiveNudistWeapon()
         {
             WeaponAsset weapon = Common.GetRandomWeapon();
-            Game.LogTrivialDebug(CalloutName + ": Gave player weapon: " + weapon);
             nudist.Inventory.GiveNewWeapon(weapon, (short) Common.GetRandomNumber(), true);
+            Game.LogTrivialDebug(CalloutName + ": Gave player weapon");
         }
     }
 }
