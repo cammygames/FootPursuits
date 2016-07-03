@@ -7,7 +7,7 @@ using static FootPursuits.Util.Enums;
 
 namespace FootPursuits.Callouts.Base
 {
-    public class CalloutBase : Callout
+    public abstract class CalloutBase : Callout
     {
         public new CalloutState State { get; set; }
         public ResponseType ResponseType { get; set; }
@@ -42,9 +42,16 @@ namespace FootPursuits.Callouts.Base
             }
         }
 
-        protected Vector3 GetRandomLocationNearPlayer(float arround)
+        protected Vector3 GetRandomLocationNearPlayer(float arround, bool sideWalk)
         {
-            return GetNextPositionOnSidewalk(World.GetNextPositionOnStreet(PlayerPed.Position.Around(arround)), true);
+            if (sideWalk)
+            {
+                return GetNextPositionOnSidewalk(World.GetNextPositionOnStreet(PlayerPed.Position.Around(arround)), true);
+            }
+            else
+            {
+                return World.GetNextPositionOnStreet(PlayerPed.Position.Around(arround));
+            }
         }
 
         public override bool OnBeforeCalloutDisplayed()
@@ -86,6 +93,9 @@ namespace FootPursuits.Callouts.Base
         public override void End()
         {
             base.End();
+
+            DeleteBlip();
+            State = CalloutState.Complete;
         }
     }
 }
