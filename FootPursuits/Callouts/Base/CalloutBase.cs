@@ -14,7 +14,6 @@ namespace FootPursuits.Callouts.Base
         protected Blip CalloutBlip { get; set; }
         protected Vector3 CalloutLocation { get; set; }
 
-        protected abstract void StartCallout();
         protected abstract void DisplayCallout();
         protected abstract void AcceptedCallout();
         protected abstract void ProcessCallout();
