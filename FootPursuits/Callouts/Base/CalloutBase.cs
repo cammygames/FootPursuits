@@ -22,6 +22,7 @@ namespace FootPursuits.Callouts.Base
         protected abstract void DisplayCallout();
         protected abstract void AcceptedCallout();
         protected abstract void ProcessCallout();
+        protected abstract void CleanupCallout();
 
         public CalloutBase()
         {
@@ -69,6 +70,9 @@ namespace FootPursuits.Callouts.Base
             CalloutPosition = GetRandomLocationNearPlayer(100f);
             if (CalloutPosition == new Vector3(0, 0, 0)) Game.LogTrivialDebug(CalloutName + ": Returned Null");
 
+            ShowCalloutAreaBlipBeforeAccepting(CalloutLocation, 15f);
+            AddMinimumDistanceCheck(5f, CalloutLocation);
+
             DisplayCallout();
 
             return base.OnBeforeCalloutDisplayed();
@@ -90,6 +94,7 @@ namespace FootPursuits.Callouts.Base
             Game.LogTrivialDebug(CalloutName + ": Callout Rejected");
             State = CalloutState.Cancelled;
 
+            CleanupCallout();
             base.OnCalloutNotAccepted();
         }
 
@@ -117,6 +122,7 @@ namespace FootPursuits.Callouts.Base
         public override void End()
         {
             Game.LogTrivialDebug(CalloutName + ": Callout ended");
+            CleanupCallout();
             base.End();
 
             foreach (Entity entity in entitys)
