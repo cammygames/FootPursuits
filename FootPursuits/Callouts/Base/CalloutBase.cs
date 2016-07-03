@@ -91,6 +91,9 @@ namespace FootPursuits.Callouts.Base
         public override void End()
         {
             base.End();
+
+            DeleteBlip();
+            State = CalloutState.Complete;
         }
     }
 }
