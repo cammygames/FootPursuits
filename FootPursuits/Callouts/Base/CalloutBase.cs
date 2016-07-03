@@ -16,8 +16,6 @@ namespace FootPursuits.Callouts.Base
         protected ResponseType ResponseType { get; set; }
         protected Blip CalloutBlip { get; set; }
         protected Vector3 CalloutLocation { get; set; }
-        protected List<Entity> entitys { get; set; }
-        protected List<Blip> blips { get; set; }
 
         protected abstract void DisplayCallout();
         protected abstract void AcceptedCallout();
@@ -45,7 +43,7 @@ namespace FootPursuits.Callouts.Base
 
         public void DeleteBlip()
         {
-            if (CalloutBlip != null && CalloutBlip.Exists())
+            if (CalloutBlip.Exists())
             {
                 CalloutBlip.DisableRoute();
                 CalloutBlip.Delete();
@@ -67,7 +65,7 @@ namespace FootPursuits.Callouts.Base
         public override bool OnBeforeCalloutDisplayed()
         {
             Game.LogTrivialDebug(CalloutName + ": Displaying Callout");
-            CalloutLocation = GetRandomLocationNearPlayer(100f);
+            CalloutLocation = GetRandomLocationNearPlayer(50f);
             CalloutPosition = CalloutLocation;
 
             ShowCalloutAreaBlipBeforeAccepting(CalloutLocation, 15f);
@@ -111,7 +109,7 @@ namespace FootPursuits.Callouts.Base
 
             if (State == CalloutState.Responding && PlayerPed.DistanceTo(CalloutLocation) < 30f)
             {
-                Game.LogTrivialDebug(CalloutName + ": Arrived on at callout");
+                Game.LogTrivialDebug(CalloutName + ": Arrived at callout");
                 State = CalloutState.OnScene;
                 OnArrival();
             }
@@ -124,28 +122,6 @@ namespace FootPursuits.Callouts.Base
             Game.LogTrivialDebug(CalloutName + ": Callout ended");
             CleanupCallout();
             base.End();
-
-            foreach (Entity entity in entitys)
-            {
-                if (entity != null)
-                {
-                    if (entity.Exists())
-                    {
-                        entity.Dismiss();
-                    }
-                }
-            }
-
-            foreach (Blip blip in blips)
-            {
-                if (blip != null)
-                {
-                    if (blip.Exists())
-                    {
-                        blip.Delete();
-                    }
-                }
-            }
 
             State = CalloutState.Complete;
         }
