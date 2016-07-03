@@ -28,8 +28,8 @@ namespace FootPursuits.Callouts.Mugging
         {
             Functions.PlayScannerAudio("UNIT_RESPONDING_DISPATCH_01");
 
-            Attacker = new Ped(CalloutLocation);
-            Victim = new Ped(CalloutLocation.Around(1f));
+            Attacker = new Ped(CalloutLocation.Around(15f));
+            Victim = new Ped(Attacker.Position.Around(2f));
             if (!Attacker.Exists()) End();
             if (!Victim.Exists()) End();
 

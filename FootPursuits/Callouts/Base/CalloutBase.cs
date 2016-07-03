@@ -69,7 +69,7 @@ namespace FootPursuits.Callouts.Base
             CalloutPosition = CalloutLocation;
 
             ShowCalloutAreaBlipBeforeAccepting(CalloutLocation, 15f);
-            AddMinimumDistanceCheck(5f, CalloutLocation);
+            AddMinimumDistanceCheck(20f, CalloutLocation);
 
             DisplayCallout();
 
