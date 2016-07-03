@@ -9,6 +9,8 @@ namespace FootPursuits.Callouts.Base
 {
     public abstract class CalloutBase : Callout
     {
+        public abstract string CalloutName { get; }
+
         protected new CalloutState State { get; set; }
         protected ResponseType ResponseType { get; set; }
         protected Blip CalloutBlip { get; set; }
@@ -60,8 +62,8 @@ namespace FootPursuits.Callouts.Base
 
         public override bool OnBeforeCalloutDisplayed()
         {
+            Game.LogTrivialDebug(CalloutName + ": Displaying Callout");
             CalloutLocation = GetRandomLocationNearPlayer(100f);
-
             CalloutPosition = CalloutLocation;
 
             DisplayCallout();
@@ -71,6 +73,7 @@ namespace FootPursuits.Callouts.Base
 
         public override bool OnCalloutAccepted()
         {
+            Game.LogTrivialDebug(CalloutName + ": Callout Accepted");
             State = CalloutState.Responding;
 
             CreateBlip();
@@ -81,6 +84,7 @@ namespace FootPursuits.Callouts.Base
 
         public override void OnCalloutNotAccepted()
         {
+            Game.LogTrivialDebug(CalloutName + ": Callout Rejected");
             State = CalloutState.Cancelled;
 
             base.OnCalloutNotAccepted();
@@ -92,12 +96,14 @@ namespace FootPursuits.Callouts.Base
 
             if (PlayerPed.IsDead)
             {
+                Game.LogTrivialDebug(CalloutName + ": Officer Died in callout");
                 OfficerDown();
                 End();
             }
 
             if (State == CalloutState.Responding && PlayerPed.DistanceTo(CalloutLocation) < 30f)
             {
+                Game.LogTrivialDebug(CalloutName + ": Arrived on at callout");
                 State = CalloutState.OnScene;
                 OnArrival();
             }
@@ -107,6 +113,7 @@ namespace FootPursuits.Callouts.Base
 
         public override void End()
         {
+            Game.LogTrivialDebug(CalloutName + ": Callout ended");
             base.End();
 
             DeleteBlip();
