@@ -44,7 +44,7 @@ namespace FootPursuits.Callouts.Base
             }
         }
 
-        protected Vector3 GetRandomNearLocation(float arround)
+        protected Vector3 GetRandomLocationNearPlayer(float arround)
         {
             return GetNextPositionOnSidewalk(World.GetNextPositionOnStreet(PlayerPed.Position.Around(arround)), true);
         }
