@@ -18,11 +18,7 @@ namespace FootPursuits
 
             GameFiber.StartNew(delegate 
             {
-                int latestVersion, installedVersion;
-                int.TryParse(UpdateAPI.GetLatestVersion(11111, false), out latestVersion);
-                int.TryParse(Common.getCurrentVersion(), out installedVersion);
-
-                if (latestVersion > installedVersion) Game.DisplayNotification("A new version of FootPursuits is available ~g~V" + latestVersion.ToString());
+                if (UpdateAPI.GetLatestVersion(11111, false) != Common.getCurrentVersion()) Game.DisplayNotification("A new version of FootPursuits is available ~g~V" + latestVersion.ToString());
 
                 GameFiber.Hibernate();
             }, "Update Check");
