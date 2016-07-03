@@ -18,12 +18,17 @@ namespace FootPursuits
 
             GameFiber.StartNew(delegate 
             {
-                string latestVersion = UpdateAPI.GetLatestVersion(11111, false);
-                if (latestVersion != Common.getCurrentVersion()) Game.DisplayNotification("A new version of Foot Pursuits is available ~g~V" + latestVersion);
+                //string latestVersion = UpdateAPI.GetLatestVersion(11111, false);
+                //if (latestVersion != Common.getCurrentVersion()) Game.DisplayNotification("A new version of Foot Pursuits is available ~g~V" + latestVersion);
 
                 GameFiber.Sleep(100); //lets give LSPDFR a chance to load the other plugins
 
-                if (Intergration.IsLSPDFRPluginRunning("LSPDFR+")) Has.LSPDFRPlus = true;
+                if (Intergration.IsLSPDFRPluginRunning("LSPDFR+"))
+                {
+                    Game.DisplaySubtitle("You have LSPDFR+");
+                    Game.LogTrivial("Intergration with LSPDFR started");
+                    Has.LSPDFRPlus = true;
+                }
 
                 GameFiber.Hibernate();
             }, "Update Check");
