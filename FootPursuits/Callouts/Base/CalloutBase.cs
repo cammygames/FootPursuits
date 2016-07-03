@@ -4,6 +4,7 @@ using LSPD_First_Response.Mod.Callouts;
 using static System.Drawing.Color;
 using static FootPursuits.Util.Common;
 using static FootPursuits.Util.Enums;
+using System.Collections.Generic;
 
 namespace FootPursuits.Callouts.Base
 {
@@ -15,6 +16,8 @@ namespace FootPursuits.Callouts.Base
         protected ResponseType ResponseType { get; set; }
         protected Blip CalloutBlip { get; set; }
         protected Vector3 CalloutLocation { get; set; }
+        protected List<Entity> entitys { get; set; }
+        protected List<Blip> blips { get; set; }
 
         protected abstract void DisplayCallout();
         protected abstract void AcceptedCallout();
@@ -63,8 +66,8 @@ namespace FootPursuits.Callouts.Base
         public override bool OnBeforeCalloutDisplayed()
         {
             Game.LogTrivialDebug(CalloutName + ": Displaying Callout");
-            CalloutLocation = GetRandomLocationNearPlayer(100f);
-            CalloutPosition = CalloutLocation;
+            CalloutPosition = GetRandomLocationNearPlayer(100f);
+            if (CalloutPosition == new Vector3(0, 0, 0)) Game.LogTrivialDebug(CalloutName + ": Returned Null");
 
             DisplayCallout();
 
@@ -116,7 +119,28 @@ namespace FootPursuits.Callouts.Base
             Game.LogTrivialDebug(CalloutName + ": Callout ended");
             base.End();
 
-            DeleteBlip();
+            foreach (Entity entity in entitys)
+            {
+                if (entity != null)
+                {
+                    if (entity.Exists())
+                    {
+                        entity.Dismiss();
+                    }
+                }
+            }
+
+            foreach (Blip blip in blips)
+            {
+                if (blip != null)
+                {
+                    if (blip.Exists())
+                    {
+                        blip.Delete();
+                    }
+                }
+            }
+
             State = CalloutState.Complete;
         }
     }

@@ -3,13 +3,19 @@ using FootPursuits.Callouts.Base;
 using LSPD_First_Response.Mod.Callouts;
 using LSPD_First_Response.Mod.API;
 using Rage;
+using Rage.Native;
+using static FootPursuits.Util.Common;
 
 namespace FootPursuits.Callouts.Mugging
 {
     [CalloutInfo("Mugging", CalloutProbability.Always)]
     class MuggingCallout : CalloutBase
     {
-        private Ped attacker, victim;
+        public override string CalloutName { get { return "Mugging"; } }
+
+        private Ped Attacker, Victim;
+        private Blip AttackerBlip;
+        private LHandle Pursuit;
 
         protected override void DisplayCallout()
         {
@@ -20,22 +26,73 @@ namespace FootPursuits.Callouts.Mugging
 
         protected override void AcceptedCallout()
         {
-            attacker = new Ped(CalloutLocation);
-            victim = new Ped(CalloutLocation.Around(1f));
+            Functions.PlayScannerAudio("UNIT_RESPONDING_DISPATCH_01");
 
-            //give the attacker a weapon.
-            attacker.Inventory.GiveNewWeapon("WEAPON_PISTOL", 50, true);
+            Attacker = new Ped(CalloutLocation);
+            Victim = new Ped(CalloutLocation.Around(1f));
+
+            //give the attacker a weapon and give him a blip.
+            Attacker.Inventory.GiveNewWeapon("WEAPON_PISTOL", 50, true);
+            AttackerBlip = Attacker.AttachBlip();
+            AttackerBlip.IsFriendly = false;
+
+            NativeFunction.CallByName<uint>("TASK_AIM_GUN_AT_ENTITY", Attacker, Victim, -1, true);
+            Victim.Tasks.PutHandsUp(-1, Attacker);
+            Victim.BlockPermanentEvents = true;
         }
 
         public override void OnArrival()
         {
             base.OnArrival();
 
+            Attacker.PlayAmbientSpeech("GENERIC_INSULT_MED");
         }
 
         protected override void ProcessCallout()
         {
-            throw new NotImplementedException();
+            if (!Attacker.Exists()) End();
+            if (!Victim.Exists()) End();
+
+            Mugging();
+        }
+
+        private void Mugging()
+        {
+            GameFiber.StartNew(delegate
+            {
+                Pursuit = Functions.CreatePursuit();
+                Functions.SetPursuitDisableAI(Pursuit, true);
+
+                int chance = random.Next(1, 5);
+
+                if (chance == 3)
+                {
+                    Attacker.Tasks.FireWeaponAt(Victim, 2000, FiringPattern.SingleShot);
+                    Victim.Tasks.ReactAndFlee(Attacker);
+
+                    GameFiber.Sleep(2000);
+
+                    Attacker.Tasks.ReactAndFlee(PlayerPed);
+                }
+                else
+                {
+                    Victim.Tasks.ReactAndFlee(Attacker);
+                    Attacker.Tasks.ReactAndFlee(PlayerPed);
+                }
+
+                Victim.Dismiss();
+
+                Functions.AddPedToPursuit(Pursuit, Attacker);
+                Functions.SetPursuitIsActiveForPlayer(Pursuit, true);
+
+                while (Functions.IsPursuitStillRunning(Pursuit))
+                {
+                    GameFiber.Yield();
+                }
+
+                End();
+                GameFiber.Hibernate();
+            }, CalloutName);
         }
 
     }

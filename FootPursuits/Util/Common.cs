@@ -17,7 +17,9 @@ namespace FootPursuits.Util
         
         public static Vector3 GetNextPositionOnSidewalk(Vector3 position, bool onGround)
         {
-            return NativeFunction.Natives.GET_SAFE_COORD_FOR_PED(position.X, position.Y, position.Z, onGround, out position, 0);
+            Vector3 location;
+            NativeFunction.Natives.GET_SAFE_COORD_FOR_PED(position.X, position.Y, position.Z, onGround, out location, 0);
+            return location;
         }
     }
 }
