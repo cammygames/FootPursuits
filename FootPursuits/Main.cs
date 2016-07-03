@@ -55,13 +55,13 @@ namespace FootPursuits
             if (OnDuty)
             {
                 RegisterCallouts();
+                Game.DisplayNotification("~o~Foot Pursuits ~g~V" + Common.getCurrentVersion() + " ~w~by ~b~Maurice Moss ~w~& ~p~Sam Collins ~w~has been initialised.");
             }
         }
 
         private static void RegisterCallouts()
         {
-            //Functions.RegisterCallout(typeof(Callouts.RTC));
-            Game.DisplayNotification("~o~Foot Pursuits ~g~V" + Common.getCurrentVersion() + " ~w~by ~b~Maurice Moss ~w~& ~p~Sam Collins ~w~has been initialised.");
+            Functions.RegisterCallout(typeof(Callouts.Nudist.NudistCallout));
         }
     }
 }
