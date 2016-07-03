@@ -61,6 +61,10 @@ namespace FootPursuits.Callouts.Base
 
         public override bool OnBeforeCalloutDisplayed()
         {
+            CalloutLocation = GetRandomLocationNearPlayer(100f);
+
+            CalloutPosition = CalloutLocation;
+
             DisplayCallout();
 
             return base.OnBeforeCalloutDisplayed();
@@ -69,6 +73,8 @@ namespace FootPursuits.Callouts.Base
         public override bool OnCalloutAccepted()
         {
             State = CalloutState.Responding;
+
+            CreateBlip();
             AcceptedCallout();
 
             return base.OnCalloutAccepted();
