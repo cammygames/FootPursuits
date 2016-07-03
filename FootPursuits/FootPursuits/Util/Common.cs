@@ -10,7 +10,7 @@ namespace FootPursuits.Util
     {
         public static Random random = new Random();
 
-        public static String getCurrentVersion()
+        public static string getCurrentVersion()
         {
             return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
