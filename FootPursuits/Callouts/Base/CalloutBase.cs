@@ -5,6 +5,7 @@ using static System.Drawing.Color;
 using static FootPursuits.Util.Common;
 using static FootPursuits.Util.Enums;
 using System.Collections.Generic;
+using Rage.Native;
 
 namespace FootPursuits.Callouts.Base
 {
@@ -50,26 +51,33 @@ namespace FootPursuits.Callouts.Base
             }
         }
 
-        protected Vector3 GetRandomLocationNearPlayer(float arround, bool sideWalk = true)
+        protected Vector3 GetRandomLocationNearPlayer(float rangeMin, float rangeMax, bool sideWalk = true)
         {
             if (sideWalk)
             {
-                return GetNextPositionOnSidewalk(World.GetNextPositionOnStreet(PlayerPed.Position.Around(arround)), true);
+                return GetNextPositionOnSidewalk(World.GetNextPositionOnStreet(PlayerPed.Position.Around(rangeMin, rangeMax)), true);
             }
             else
             {
-                return World.GetNextPositionOnStreet(PlayerPed.Position.Around(arround));
+                return World.GetNextPositionOnStreet(PlayerPed.Position.Around(rangeMin, rangeMax));
             }
+        }
+
+        protected Ped RecruitNearPed(Vector3 location, float arround, int type = -1)
+        {
+            Ped ped;
+            bool function = NativeFunction.Natives.GET_CLOSEST_PED(location.X, location.Y, location.Z, arround, false, false, out ped, false, false, type);
+            return ped;
         }
 
         public override bool OnBeforeCalloutDisplayed()
         {
             Game.LogTrivialDebug(CalloutName + ": Displaying Callout");
-            CalloutLocation = GetRandomLocationNearPlayer(50f);
+            CalloutLocation = GetRandomLocationNearPlayer(10f, 30f);
             CalloutPosition = CalloutLocation;
 
             ShowCalloutAreaBlipBeforeAccepting(CalloutLocation, 15f);
-            AddMinimumDistanceCheck(20f, CalloutLocation);
+            AddMinimumDistanceCheck(5f, CalloutLocation);
 
             DisplayCallout();
 
@@ -121,6 +129,7 @@ namespace FootPursuits.Callouts.Base
         {
             Game.LogTrivialDebug(CalloutName + ": Callout ended");
             CleanupCallout();
+            DeleteBlip();
             base.End();
 
             State = CalloutState.Complete;

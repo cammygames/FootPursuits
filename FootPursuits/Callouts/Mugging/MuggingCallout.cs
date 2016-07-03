@@ -28,9 +28,10 @@ namespace FootPursuits.Callouts.Mugging
         {
             Functions.PlayScannerAudio("UNIT_RESPONDING_DISPATCH_01");
 
-            Attacker = new Ped(CalloutLocation.Around(15f));
-            Victim = new Ped(Attacker.Position.Around(2f));
+            Attacker = RecruitNearPed(CalloutLocation, 15f);
             if (!Attacker.Exists()) End();
+
+            Victim = RecruitNearPed(Attacker.Position, 5f);  
             if (!Victim.Exists()) End();
 
             //give the attacker a weapon and give him a blip.
