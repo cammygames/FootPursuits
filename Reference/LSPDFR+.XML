@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LSPDFR+</name>
+    </assembly>
+    <members>
+        <member name="M:LSPDFR_.API.Functions.CreateNewCourtCase(Rage.Ped,System.String,System.Boolean,System.String)">
+            <summary>
+            Adds a new court case to the court system.
+            </summary>
+            <param name="Defendant"></param>
+            <param name="Crime">String describing the crime committed, e.g. 'stealing a police vehicle'.</param>
+            <param name="PleadGuilty">Bool indicating whether or not the suspect pleads guilty.</param>
+            <param name="CourtVerdict">The decision the court will come to, e.g. 'Sentenced to 5 months in prison'</param>
+        </member>
+        <member name="M:LSPDFR_.API.Functions.CreateNewCourtCase(Rage.Ped,System.String,System.Boolean,System.String,System.DateTime)">
+            <summary>
+            Adds a new court case to the court system.
+            </summary>
+            <param name="Defendant"></param>
+            <param name="Crime">String describing the crime committed, e.g. 'stealing a police vehicle'.</param>
+            <param name="PleadGuilty">Bool indicating whether or not the suspect pleads guilty.</param>
+            <param name="CourtVerdict">The decision the court will come to, e.g. 'Sentenced to 5 months in prison'</param>
+            <param name="ResultsPublishTime">The DateTime when the results will become available to the player.</param>
+        </member>
+        <member name="M:LSPDFR_.API.Functions.DeterminePrisonSentence(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Returns a court verdict for a prison sentence depending on the parameters.
+            </summary>
+            <param name="MinMonths"></param>
+            <param name="MaxMonths"></param>
+            <param name="SuspendedChance">Percentage based chance of the sentence being suspended. 100 = always suspended, 0 = never suspended.</param>
+            <returns></returns>
+        </member>
+        <member name="M:LSPDFR_.API.Functions.DetermineFineSentence(System.Int32,System.Int32)">
+            <summary>
+            Returns a court verdict for a fine depending on the parameters.
+            </summary>
+            <param name="MinFine"></param>
+            <param name="MaxFine"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LSPDFR_.API.Functions.AddQuestionToTrafficStop(Rage.Ped,System.String,System.String)">
+            <summary>
+            Adds a custom question to the traffic stop questioning section.
+            </summary>
+            <param name="Suspect">The ped for whom the question should appear (must have this ped stopped for the question to appear).</param>
+            <param name="Question"></param>
+            <param name="Answer"></param>
+        </member>
+        <member name="M:LSPDFR_.API.Functions.AddQuestionToTrafficStop(Rage.Ped,System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            Adds a custom question to the traffic stop questioning section.
+            </summary>
+            <param name="Suspect">The ped for whom the question should appear (must have this ped stopped for the question to appear).</param>
+            <param name="Question"></param>
+            <param name="Answers">A list of possible answers. A random one will be selected.</param>
+        </member>
+        <member name="M:LSPDFR_.API.Functions.AddQuestionToTrafficStop(Rage.Ped,System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String})">
+            <summary>
+            Adds a custom question to the traffic stop questioning section.
+            </summary>
+            <param name="Suspect">The ped for whom the question should appear (must have this ped stopped for the question to appear).</param>
+            <param name="Questions">A list of possible questions. A random one will be selected.</param>
+            <param name="Answers">A list of possible answers. A random one will be selected.</param>
+        </member>
+        <member name="T:LSPDFR_.API.ProtectedFunctions">
+            <summary>
+            These functions require verification with me (Albo1125) beforehand to ensure fairness. To get verified, please contact me.
+            </summary>
+        </member>
+        <member name="M:LSPDFR_.API.ProtectedFunctions.AddCountToStatistic(System.Guid,System.String)">
+            <summary>
+            Increases the specified statistic by one.
+            </summary>
+            <param name="SecurityGuid">Use GenerateSecurityGuid().</param>
+            <param name="Statistic">The statistic to increase.</param>
+        </member>
+        <member name="M:LSPDFR_.API.ProtectedFunctions.GenerateSecurityGuid(System.Reflection.Assembly,System.String,System.String,System.String)">
+            <summary>
+            If Signature matches with the passed ExecutingAssembly, PluginName and AuthorName, returns a security Guid to allow use of this class's functions.
+            </summary>
+            <param name="ExecutingAssembly">Pass the following: System.Reflection.Assembly.GetExecutingAssembly()</param>
+            <param name="PluginName">Exact PluginName as agreed between you and me.</param>
+            <param name="AuthorName">Exact AuthorName as agreed between you and me.</param>
+            <param name="Signature">The Signature as you obtained from me.</param>
+            <returns>If verification is successful, returns a security Guid. If unsuccessful, returns an empty Guid.</returns>
+        </member>
+        <member name="M:LSPDFR_.SimpleAES.GenerateEncryptionKey">
+            -------------- Two Utility Methods (not used but may be useful) -----------
+            Generates an encryption key.
+        </member>
+        <member name="M:LSPDFR_.SimpleAES.GenerateEncryptionVector">
+            Generates a unique encryption vector
+        </member>
+        <member name="M:LSPDFR_.SimpleAES.EncryptToString(System.String)">
+            ----------- The commonly used methods ------------------------------    
+            Encrypt some text and return a string suitable for passing in a URL.
+        </member>
+        <member name="M:LSPDFR_.SimpleAES.Encrypt(System.String)">
+            Encrypt some text and return an encrypted byte array.
+        </member>
+        <member name="M:LSPDFR_.SimpleAES.DecryptString(System.String)">
+            The other side: Decryption methods
+        </member>
+        <member name="M:LSPDFR_.SimpleAES.Decrypt(System.Byte[])">
+            Decryption when working with byte arrays.    
+        </member>
+        <member name="M:LSPDFR_.SimpleAES.StrToByteArray(System.String)">
+            Convert a string to a byte array.  NOTE: Normally we'd create a Byte Array from a string using an ASCII encoding (like so).
+        </member>
+    </members>
+</doc>
