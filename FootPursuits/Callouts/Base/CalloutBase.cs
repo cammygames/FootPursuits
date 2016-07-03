@@ -32,15 +32,13 @@ namespace FootPursuits.Callouts.Base
             CalloutBlip.Color = Yellow;
             CalloutBlip.EnableRoute(Yellow);
         }
+
         public void DeleteBlip()
         {
-            if (CalloutBlip != null)
+            if (CalloutBlip != null && CalloutBlip.Exists())
             {
-                if (CalloutBlip.Exists())
-                {
-                    CalloutBlip.DisableRoute();
-                    CalloutBlip.Delete();
-                }
+                CalloutBlip.DisableRoute();
+                CalloutBlip.Delete();
             }
         }
 
@@ -85,13 +83,10 @@ namespace FootPursuits.Callouts.Base
                 End();
             }
 
-            if (State == CalloutState.Responding)
+            if (State == CalloutState.Responding && PlayerPed.DistanceTo(CalloutLocation) < 30f)
             {
-                if (PlayerPed.DistanceTo(CalloutLocation) < 30f)
-                {
-                    State = CalloutState.OnScene;
-                    OnArrival();
-                }
+                State = CalloutState.OnScene;
+                OnArrival();
             }
         }
 

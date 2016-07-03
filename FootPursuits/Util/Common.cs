@@ -1,6 +1,7 @@
 ﻿using System;
 using Rage;
 using Rage.Native;
+using System.Reflection;
 
 namespace FootPursuits.Util
 {
@@ -11,7 +12,7 @@ namespace FootPursuits.Util
 
         public static string getCurrentVersion()
         {
-            return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            return Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
         
         public static Vector3 GetNextPositionOnSidewalk(Vector3 position, bool onGround)
