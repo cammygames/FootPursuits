@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Callouts\Base\CalloutBase.cs" />
     <Compile Include="Callouts\Base\ICalloutBase.cs" />
+    <Compile Include="Callouts\Nudist\NudistCallout.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\Common.cs" />
