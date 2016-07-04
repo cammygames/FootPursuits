@@ -17,6 +17,8 @@ namespace FootPursuits.Callouts.Base
         protected ResponseType ResponseType { get; set; }
         protected Blip CalloutBlip { get; set; }
         protected Vector3 CalloutLocation { get; set; }
+        protected float onSceneDistance { get; set; }
+        protected float minimumDistance { get; set; }
 
         protected abstract void DisplayCallout();
         protected abstract void AcceptedCallout();
@@ -44,30 +46,11 @@ namespace FootPursuits.Callouts.Base
 
         public void DeleteBlip()
         {
-            if (CalloutBlip.Exists())
+            if (CalloutBlip != null && CalloutBlip.Exists())
             {
                 CalloutBlip.DisableRoute();
                 CalloutBlip.Delete();
             }
-        }
-
-        protected Vector3 GetRandomLocationNearPlayer(float rangeMin, float rangeMax, bool sideWalk = true)
-        {
-            if (sideWalk)
-            {
-                return GetNextPositionOnSidewalk(World.GetNextPositionOnStreet(PlayerPed.Position.Around(rangeMin, rangeMax)), true);
-            }
-            else
-            {
-                return World.GetNextPositionOnStreet(PlayerPed.Position.Around(rangeMin, rangeMax));
-            }
-        }
-
-        protected Ped RecruitNearPed(Vector3 location, float arround, int type = -1)
-        {
-            Ped ped;
-            bool function = NativeFunction.Natives.GET_CLOSEST_PED(location.X, location.Y, location.Z, arround, false, false, out ped, false, false, type);
-            return ped;
         }
 
         public override bool OnBeforeCalloutDisplayed()
@@ -76,10 +59,10 @@ namespace FootPursuits.Callouts.Base
             CalloutLocation = GetRandomLocationNearPlayer(10f, 30f);
             CalloutPosition = CalloutLocation;
 
-            ShowCalloutAreaBlipBeforeAccepting(CalloutLocation, 15f);
-            AddMinimumDistanceCheck(5f, CalloutLocation);
-
             DisplayCallout();
+
+            AddMinimumDistanceCheck(minimumDistance, CalloutLocation);
+            ShowCalloutAreaBlipBeforeAccepting(CalloutLocation, 15f);
 
             return base.OnBeforeCalloutDisplayed();
         }
@@ -115,7 +98,7 @@ namespace FootPursuits.Callouts.Base
                 End();
             }
 
-            if (State == CalloutState.Responding && PlayerPed.DistanceTo(CalloutLocation) < 30f)
+            if (State == CalloutState.Responding && PlayerPed.DistanceTo(CalloutLocation) < onSceneDistance)
             {
                 Game.LogTrivialDebug(CalloutName + ": Arrived at callout");
                 State = CalloutState.OnScene;

@@ -19,20 +19,21 @@ namespace FootPursuits.Callouts.Mugging
 
         protected override void DisplayCallout()
         {
-            CalloutMessage = "Mugging in progress";
+            Attacker = new Ped(CalloutLocation);
+            if (!Attacker.Exists()) End();
 
-            Functions.PlayScannerAudioUsingPosition("CITIZENS_REPORT_03 CRIME_POSSIBLE_MUGGING IN_OR_ON_POSITION", CalloutLocation);
+            Victim = new Ped(CalloutLocation.Around(3f));
+            if (!Victim.Exists()) End();
+
+            CalloutMessage = "Mugging in progress";
+            minimumDistance = 15f;
+
+            Functions.PlayScannerAudioUsingPosition("CITIZENS_REPORT_03 CRIME_RESIST_ARREST_01 IN_OR_ON_POSITION", CalloutLocation);
         }
 
         protected override void AcceptedCallout()
         {
             Functions.PlayScannerAudio("UNIT_RESPONDING_DISPATCH_01");
-
-            Attacker = RecruitNearPed(CalloutLocation, 15f);
-            if (!Attacker.Exists()) End();
-
-            Victim = RecruitNearPed(Attacker.Position, 5f);  
-            if (!Victim.Exists()) End();
 
             //give the attacker a weapon and give him a blip.
             Attacker.Inventory.GiveNewWeapon("WEAPON_PISTOL", 50, true);
@@ -40,10 +41,13 @@ namespace FootPursuits.Callouts.Mugging
 
             if (!AttackerBlip.Exists()) End();
             AttackerBlip.IsFriendly = false;
+            AttackerBlip.Scale = 0.5f;
 
             NativeFunction.CallByName<uint>("TASK_AIM_GUN_AT_ENTITY", Attacker, Victim, -1, true);
             Victim.Tasks.PutHandsUp(-1, Attacker);
             Victim.BlockPermanentEvents = true;
+
+            onSceneDistance = 3f;
         }
 
         public override void OnArrival()
@@ -120,6 +124,7 @@ namespace FootPursuits.Callouts.Mugging
 
         protected override void CleanupCallout()
         {
+            if (Pursuit != null && Functions.IsPursuitStillRunning(Pursuit)) Functions.ForceEndPursuit(Pursuit);
             if (Attacker.Exists()) Attacker.Dismiss();
             if (AttackerBlip.Exists()) AttackerBlip.Delete();
             if (Victim.Exists()) Victim.Dismiss();

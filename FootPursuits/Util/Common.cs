@@ -17,11 +17,18 @@ namespace FootPursuits.Util
             return Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
         
-        public static Vector3 GetNextPositionOnSidewalk(Vector3 position, bool onGround)
+        public static Vector3 GetNextPositionOnSidewalk(Vector3 position, bool onGround = true)
         {
             Vector3 location;
-            NativeFunction.Natives.GET_SAFE_COORD_FOR_PED(position.X, position.Y, position.Z, onGround, out location, 0);
+            NativeFunction.Natives.GET_SAFE_COORD_FOR_PED(position.X, position.Y, position.Z, onGround, out location, 16);
             return location;
+        }
+
+        public static Vector3 GetRandomLocationNearPlayer(float rangeMin, float rangeMax, bool sideWalk = true)
+        {
+            if (sideWalk)  return GetNextPositionOnSidewalk(World.GetNextPositionOnStreet(PlayerPed.Position.Around(rangeMin, rangeMax)));
+
+            return World.GetNextPositionOnStreet(PlayerPed.Position.Around(rangeMin, rangeMax));
         }
 
         public static int GetRandomNumber(int Start = 1, int End = 100)
