@@ -26,7 +26,12 @@ namespace FootPursuits.Util
 
         public static Vector3 GetRandomLocationNearPlayer(float rangeMin, float rangeMax, bool sideWalk = true)
         {
-            if (sideWalk)  return GetNextPositionOnSidewalk(World.GetNextPositionOnStreet(PlayerPed.Position.Around(rangeMin, rangeMax)));
+            if (sideWalk)
+            {
+                Vector3 location = GetNextPositionOnSidewalk(World.GetNextPositionOnStreet(PlayerPed.Position.Around(rangeMin, rangeMax)));
+                if (location == Vector3.Zero) return World.GetNextPositionOnStreet(PlayerPed.Position.Around(rangeMin, rangeMax));
+                return location;
+            }
 
             return World.GetNextPositionOnStreet(PlayerPed.Position.Around(rangeMin, rangeMax));
         }
