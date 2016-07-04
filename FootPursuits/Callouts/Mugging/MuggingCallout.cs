@@ -22,11 +22,10 @@ namespace FootPursuits.Callouts.Mugging
             Attacker = new Ped(CalloutLocation);
             if (!Attacker.Exists()) End();
 
-            Victim = new Ped(CalloutLocation.Around(3f));
+            Victim = new Ped(CalloutLocation.Around(0.2f));
             if (!Victim.Exists()) End();
 
             CalloutMessage = "Mugging in progress";
-            minimumDistance = 15f;
 
             Functions.PlayScannerAudioUsingPosition("CITIZENS_REPORT_03 CRIME_RESIST_ARREST_01 IN_OR_ON_POSITION", CalloutLocation);
         }
@@ -47,7 +46,7 @@ namespace FootPursuits.Callouts.Mugging
             Victim.Tasks.PutHandsUp(-1, Attacker);
             Victim.BlockPermanentEvents = true;
 
-            onSceneDistance = 3f;
+            onSceneDistance = 10f;
         }
 
         public override void OnArrival()
@@ -99,7 +98,7 @@ namespace FootPursuits.Callouts.Mugging
 
                 }
 
-                if (Victim.Exists()) Victim.Dismiss();
+                if (Victim.Exists()) Victim.Tasks.ReactAndFlee(Attacker);
 
                 if (Attacker.Exists())
                 {

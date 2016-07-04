@@ -1,11 +1,8 @@
 ﻿using Rage;
-using LSPD_First_Response.Mod.API;
 using LSPD_First_Response.Mod.Callouts;
 using static System.Drawing.Color;
 using static FootPursuits.Util.Common;
 using static FootPursuits.Util.Enums;
-using System.Collections.Generic;
-using Rage.Native;
 
 namespace FootPursuits.Callouts.Base
 {
@@ -18,7 +15,6 @@ namespace FootPursuits.Callouts.Base
         protected Blip CalloutBlip { get; set; }
         protected Vector3 CalloutLocation { get; set; }
         protected float onSceneDistance { get; set; }
-        protected float minimumDistance { get; set; }
 
         protected abstract void DisplayCallout();
         protected abstract void AcceptedCallout();
@@ -56,13 +52,13 @@ namespace FootPursuits.Callouts.Base
         public override bool OnBeforeCalloutDisplayed()
         {
             Game.LogTrivialDebug(CalloutName + ": Displaying Callout");
-            CalloutLocation = GetRandomLocationNearPlayer(10f, 30f);
+            CalloutLocation = GetRandomLocationNearPlayer(15f, 50f);
             CalloutPosition = CalloutLocation;
 
-            DisplayCallout();
-
-            AddMinimumDistanceCheck(minimumDistance, CalloutLocation);
+            AddMinimumDistanceCheck(15f, CalloutLocation);
             ShowCalloutAreaBlipBeforeAccepting(CalloutLocation, 15f);
+
+            DisplayCallout();
 
             return base.OnBeforeCalloutDisplayed();
         }

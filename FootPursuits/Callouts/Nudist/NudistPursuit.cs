@@ -13,10 +13,10 @@ namespace FootPursuits.Callouts.Nudist
         protected Ped Nudist;
         protected NudistCallout Callout;
 
-        public NudistPursuit(NudistCallout Callout)
+        public NudistPursuit(NudistCallout callout)
         {
-            Nudist = Callout.nudist;
-            Callout = Callout;
+            Nudist = callout.nudist;
+            Callout = callout;
         }
 
         public void attack()
@@ -44,7 +44,7 @@ namespace FootPursuits.Callouts.Nudist
                 Callout.End();
 
                 GameFiber.Hibernate();
-            });
+            }, Callout.CalloutName + " Pursuit");
         }
     }
 }
