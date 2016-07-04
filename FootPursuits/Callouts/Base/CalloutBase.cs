@@ -14,7 +14,7 @@ namespace FootPursuits.Callouts.Base
         protected ResponseType ResponseType { get; set; }
         protected Blip CalloutBlip { get; set; }
         protected Vector3 CalloutLocation { get; set; }
-        protected float onSceneDistance { get; set; }
+        protected float OnSceneDistance { get; set; }
 
         protected abstract void DisplayCallout();
         protected abstract void AcceptedCallout();
@@ -93,7 +93,7 @@ namespace FootPursuits.Callouts.Base
                 EndCallout("Officer Died in callout");
             }
 
-            if (State == CalloutState.Responding && PlayerPed.DistanceTo(CalloutLocation) < onSceneDistance)
+            if (State == CalloutState.Responding && PlayerPed.DistanceTo(CalloutLocation) < OnSceneDistance)
             {
                 Game.LogTrivialDebug(CalloutName + ": Arrived at callout");
                 State = CalloutState.OnScene;

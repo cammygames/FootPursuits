@@ -40,7 +40,7 @@ namespace FootPursuits.Callouts.Mugging
             Attacker.Tasks.AimWeaponAt(Victim, -1);
             Victim.Tasks.PutHandsUp(-1, Attacker);
 
-            onSceneDistance = 20f;
+            OnSceneDistance = 20f;
         }
 
         public override void OnArrival()
