@@ -19,11 +19,8 @@ namespace FootPursuits.Callouts.Mugging
 
         protected override void DisplayCallout()
         {
-            Attacker = new Ped(CalloutLocation);
-            if (!Attacker.Exists()) End();
-
-            Victim = new Ped(CalloutLocation.Around(0.2f));
-            if (!Victim.Exists()) End();
+            CreateAttacker(CalloutLocation);
+            CreateVictim(CalloutLocation.Around(1f));
 
             CalloutMessage = "Mugging in progress";
 
@@ -34,17 +31,11 @@ namespace FootPursuits.Callouts.Mugging
         {
             Functions.PlayScannerAudio("UNIT_RESPONDING_DISPATCH_01");
 
-            //give the attacker a weapon and give him a blip.
-            Attacker.Inventory.GiveNewWeapon("WEAPON_PISTOL", 50, true);
-            AttackerBlip = Attacker.AttachBlip();
+            if (!Attacker.Exists()) EndCallout("Attacker does not exist!");
+            if (!Victim.Exists()) EndCallout("Victim does not exist!");
 
-            if (!AttackerBlip.Exists()) End();
-            AttackerBlip.IsFriendly = false;
-            AttackerBlip.Scale = 0.5f;
-
-            NativeFunction.CallByName<uint>("TASK_AIM_GUN_AT_ENTITY", Attacker, Victim, -1, true);
+            Attacker.Tasks.AimWeaponAt(Victim, -1);
             Victim.Tasks.PutHandsUp(-1, Attacker);
-            Victim.BlockPermanentEvents = true;
 
             onSceneDistance = 10f;
         }
@@ -53,23 +44,50 @@ namespace FootPursuits.Callouts.Mugging
         {
             base.OnArrival();
 
-            if (!Attacker.Exists()) End();
-            if (!Victim.Exists()) End();
+            if (!Attacker.Exists()) EndCallout("Attacker does not exist!");
+            if (!Victim.Exists()) EndCallout("Victim does not exist!");
 
-            Attacker.PlayAmbientSpeech("GENERIC_INSULT_MED");
             Mugging();
         }
 
         protected override void ProcessCallout()
         {
-            if (!Attacker.Exists()) End();
-            if (!Victim.Exists()) End();
+            if (!Attacker.Exists()) EndCallout("Attacker does not exist!");
+            if (!Victim.Exists()) EndCallout("Victim does not exist!");
+        }
+
+        private void CreateAttacker(Vector3 location)
+        {
+            Attacker = new Ped(location);
+            if (!Attacker.Exists()) EndCallout("Attacker did not spawn.");
+
+            Attacker.IsPersistent = true;
+            Attacker.Alertness = 1;
+            Attacker.BlockPermanentEvents = true;
+            Attacker.Inventory.GiveNewWeapon("WEAPON_PISTOL", 50, true);
+
+            Game.LogTrivial(CalloutName + "Attacker Created.");
+        }
+
+        private void CreateVictim(Vector3 location)
+        {
+            Victim = new Ped(location);
+            if (!Victim.Exists()) EndCallout("Victim did not spawn.");
+
+            Attacker.IsPersistent = true;
+            Attacker.Alertness = 1;
+            Attacker.BlockPermanentEvents = true;
+            Game.LogTrivial(CalloutName + "Victim Created.");
         }
 
         private void Mugging()
         {
             GameFiber.StartNew(delegate
             {
+                Attacker.PlayAmbientSpeech("Shout_Threaten_Ped");
+                GameFiber.Sleep(500);
+                Victim.PlayAmbientSpeech("Generic_Frightened_Med");
+
                 Pursuit = Functions.CreatePursuit();
                 Functions.SetPursuitDisableAI(Pursuit, true);
 
@@ -78,9 +96,11 @@ namespace FootPursuits.Callouts.Mugging
                 if (chance == 3 && Attacker.Exists() && Victim.Exists())
                 {
                     Victim.Tasks.ReactAndFlee(Attacker); // run away from attacker
-                    Attacker.Tasks.FireWeaponAt(Victim, 2000, FiringPattern.SingleShot);
+                    GameFiber.Sleep(500);
 
-                    GameFiber.Sleep(2000);
+                    Attacker.Tasks.FireWeaponAt(Victim, 2000, FiringPattern.BurstFirePistol);
+
+                    GameFiber.Sleep(500);
 
                     Attacker.Tasks.ReactAndFlee(PlayerPed); // run away from player.
                 }
@@ -93,7 +113,7 @@ namespace FootPursuits.Callouts.Mugging
                     }
                     else
                     {
-                        End();
+                        EndCallout("Either Victim or Attacker didnt exist!");
                     }
 
                 }
@@ -107,7 +127,7 @@ namespace FootPursuits.Callouts.Mugging
                 }
                 else
                 {
-                    End();
+                    EndCallout("Attacker didnt exist!");
                 }
 
 
@@ -116,7 +136,7 @@ namespace FootPursuits.Callouts.Mugging
                     GameFiber.Yield();
                 }
 
-                End();
+                EndCallout("Callout finished, shutting down thread");
                 GameFiber.Hibernate();
             }, CalloutName);
         }
@@ -128,5 +148,7 @@ namespace FootPursuits.Callouts.Mugging
             if (AttackerBlip.Exists()) AttackerBlip.Delete();
             if (Victim.Exists()) Victim.Dismiss();
         }
+
+        protected override void OfficerDown() {}
     }
 }

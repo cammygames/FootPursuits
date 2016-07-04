@@ -55,7 +55,7 @@ namespace FootPursuits
             if (OnDuty)
             {
                 RegisterCallouts();
-                Game.DisplayNotification("~o~Foot Pursuits ~g~V" + Common.getCurrentVersion() + " ~w~by ~b~Maurice Moss ~w~& ~p~Sam Collins ~w~has been initialised.");
+                Game.DisplayNotification("Foot Pursuits ~g~V" + Common.getCurrentVersion() + " ~w~by ~b~Maurice Moss ~w~& ~p~Sam Collins ~w~has been initialised.");
             }
         }
 

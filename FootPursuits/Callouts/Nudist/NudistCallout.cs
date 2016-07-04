@@ -50,7 +50,8 @@ namespace FootPursuits.Callouts.Nudist
         {
             nudist = new Ped (CalloutLocation);
 
-            if (!nudist.Exists()) {
+            if (!nudist.Exists())
+            {
                 Game.LogTrivial(CalloutName + ": Ped did not spawn");
                 End();
             }

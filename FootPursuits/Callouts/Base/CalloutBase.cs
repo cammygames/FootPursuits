@@ -19,6 +19,7 @@ namespace FootPursuits.Callouts.Base
         protected abstract void DisplayCallout();
         protected abstract void AcceptedCallout();
         protected abstract void ProcessCallout();
+        protected abstract void OfficerDown();
         protected abstract void CleanupCallout();
 
         public CalloutBase()
@@ -27,7 +28,6 @@ namespace FootPursuits.Callouts.Base
             ResponseType = ResponseType.Code2;
         }     
 
-        public virtual void OfficerDown() { }
         public virtual void OnArrival()
         {
             DeleteBlip();
@@ -89,9 +89,8 @@ namespace FootPursuits.Callouts.Base
 
             if (PlayerPed.IsDead)
             {
-                Game.LogTrivialDebug(CalloutName + ": Officer Died in callout");
                 OfficerDown();
-                End();
+                EndCallout("Officer Died in callout");
             }
 
             if (State == CalloutState.Responding && PlayerPed.DistanceTo(CalloutLocation) < onSceneDistance)
@@ -102,6 +101,12 @@ namespace FootPursuits.Callouts.Base
             }
 
             ProcessCallout();
+        }
+
+        protected void EndCallout(string reason)
+        {
+            Game.LogTrivial(CalloutName + ": Has ended becuase " + reason);
+            End();
         }
 
         public override void End()
