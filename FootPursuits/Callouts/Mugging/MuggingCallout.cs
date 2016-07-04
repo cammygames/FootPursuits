@@ -14,13 +14,16 @@ namespace FootPursuits.Callouts.Mugging
         public override string CalloutName { get { return "Mugging"; } }
 
         private Ped Attacker, Victim;
-        private Blip AttackerBlip;
         private LHandle Pursuit;
 
         protected override void DisplayCallout()
         {
-            CreateAttacker(CalloutLocation);
-            CreateVictim(CalloutLocation.Around(1f));
+            GameFiber.StartNew(delegate
+            {
+                CreateAttacker(CalloutLocation);
+                CreateVictim(CalloutLocation.Around(1f));
+                GameFiber.Hibernate();
+            }, CalloutName + " Creation Thread");
 
             CalloutMessage = "Mugging in progress";
 
@@ -37,7 +40,7 @@ namespace FootPursuits.Callouts.Mugging
             Attacker.Tasks.AimWeaponAt(Victim, -1);
             Victim.Tasks.PutHandsUp(-1, Attacker);
 
-            onSceneDistance = 10f;
+            onSceneDistance = 20f;
         }
 
         public override void OnArrival()
@@ -75,7 +78,6 @@ namespace FootPursuits.Callouts.Mugging
             if (!Victim.Exists()) EndCallout("Victim did not spawn.");
 
             Attacker.IsPersistent = true;
-            Attacker.Alertness = 1;
             Attacker.BlockPermanentEvents = true;
             Game.LogTrivial(CalloutName + "Victim Created.");
         }
@@ -145,7 +147,6 @@ namespace FootPursuits.Callouts.Mugging
         {
             if (Pursuit != null && Functions.IsPursuitStillRunning(Pursuit)) Functions.ForceEndPursuit(Pursuit);
             if (Attacker.Exists()) Attacker.Dismiss();
-            if (AttackerBlip.Exists()) AttackerBlip.Delete();
             if (Victim.Exists()) Victim.Dismiss();
         }
 
