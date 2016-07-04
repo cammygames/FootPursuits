@@ -16,7 +16,7 @@ namespace FootPursuits.Callouts.Mugging
         private Ped Attacker, Victim;
         private LHandle Pursuit;
 
-        protected override void DisplayCallout()
+        protected override void BeforeCalloutDisplayed()
         {
             GameFiber.StartNew(delegate
             {
@@ -69,7 +69,7 @@ namespace FootPursuits.Callouts.Mugging
             Attacker.BlockPermanentEvents = true;
             Attacker.Inventory.GiveNewWeapon("WEAPON_PISTOL", 50, true);
 
-            Game.LogTrivial(CalloutName + "Attacker Created.");
+            Game.LogTrivial(CalloutName + " Attacker Created.");
         }
 
         private void CreateVictim(Vector3 location)
@@ -79,7 +79,7 @@ namespace FootPursuits.Callouts.Mugging
 
             Attacker.IsPersistent = true;
             Attacker.BlockPermanentEvents = true;
-            Game.LogTrivial(CalloutName + "Victim Created.");
+            Game.LogTrivial(CalloutName + " Victim Created.");
         }
 
         private void Mugging()
@@ -95,7 +95,7 @@ namespace FootPursuits.Callouts.Mugging
 
                 int chance = random.Next(1, 5);
 
-                if (chance == 3 && Attacker.Exists() && Victim.Exists())
+                if (chance == 3 || chance == 4 && Attacker.Exists() && Victim.Exists())
                 {
                     Victim.Tasks.ReactAndFlee(Attacker); // run away from attacker
                     GameFiber.Sleep(500);

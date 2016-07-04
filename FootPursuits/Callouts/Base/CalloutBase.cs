@@ -16,7 +16,7 @@ namespace FootPursuits.Callouts.Base
         protected Vector3 CalloutLocation { get; set; }
         protected float OnSceneDistance { get; set; }
 
-        protected abstract void DisplayCallout();
+        protected abstract void BeforeCalloutDisplayed();
         protected abstract void AcceptedCallout();
         protected abstract void ProcessCallout();
         protected abstract void OfficerDown();

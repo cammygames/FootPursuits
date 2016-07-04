@@ -16,7 +16,7 @@ namespace FootPursuits.Callouts.Nudist
         public override string CalloutName { get { return "NudistCallout"; } }
         public Ped nudist { get; set; }
 
-        protected override void DisplayCallout()
+        protected override void BeforeCalloutDisplayed()
         {
             CalloutMessage = "Public Indecency";
 
