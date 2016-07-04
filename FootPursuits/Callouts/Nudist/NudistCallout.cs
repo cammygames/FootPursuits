@@ -3,6 +3,7 @@ using FootPursuits.Util;
 using FootPursuits.Callouts.Base;
 using LSPD_First_Response.Mod.API;
 using LSPD_First_Response.Mod.Callouts;
+using System;
 
 namespace FootPursuits.Callouts.Nudist
 {
@@ -78,6 +79,11 @@ namespace FootPursuits.Callouts.Nudist
             WeaponAsset weapon = Common.GetRandomWeapon();
             nudist.Inventory.GiveNewWeapon(weapon, (short) Common.GetRandomNumber(), true);
             Game.LogTrivialDebug(CalloutName + ": Gave player weapon");
+        }
+
+        protected override void OfficerDown()
+        {
+            throw new NotImplementedException();
         }
     }
 }
